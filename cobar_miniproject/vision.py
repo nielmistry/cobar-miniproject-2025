@@ -102,10 +102,25 @@ class RawVideoHandler:
             del obs["raw_vision"]
         else:
             frame = info["raw_vision"]
+    
 
         frame = frame.astype(np.uint8)
         frame = np.concatenate((frame[0, :, :, :], frame[1, :, :, :]), axis=1)
+
+        # This is to make imageio stop complaining:
+        # input image is not divisible by macro_block_size=16, resizing from (900, 514) to (912, 528) to ensure video compatibility with most codecs 
+        # and players. To prevent resizing, make your input image divisible by the macro_block_size or set the macro_block_size to 1 
+        # (risking incompatibility).
+        if frame.shape[0] % 16 != 0 or frame.shape[1] % 16 != 0: 
+            new_height = (frame.shape[0] + 15) // 16 * 16
+            new_width = (frame.shape[1] + 15) // 16 * 16
+            frame = np.pad(
+                frame,
+                ((0, new_height - frame.shape[0]), (0, new_width - frame.shape[1]), (0, 0)),
+                mode='constant',
+                constant_values=0
+            )
+
         self.writer.append_data(frame)
 
-        return info
     
