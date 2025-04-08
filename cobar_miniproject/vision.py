@@ -1,5 +1,8 @@
 from flygym import Fly
 import numpy as np
+from pathlib import Path
+import imageio
+from copy import deepcopy
 
 
 def get_fly_vision(fly: Fly):
@@ -47,3 +50,29 @@ def render_image_with_vision(image: np.ndarray, vision: np.ndarray):
         )
 
     return np.vstack((vision, image))
+
+class RawVideoHandler:
+    def __init__(self, file_name_prefix):
+        self.save_path = Path("outputs")/f"{file_name_prefix}_raw_vision.mp4"
+        self.save_path.parent.mkdir(parents=True, exist_ok=True)
+
+    def __enter__(self): 
+        self.writer = imageio.get_writer(self.save_path, fps=24) # unsure about fps
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.writer.close()
+    
+    def handle_raw_video(self, info, obs, delete_video_from_dicts=True): 
+        if delete_video_from_dicts: 
+            frame = deepcopy(info["raw_vision"])
+            del info["raw_vision"]
+            del obs["raw_vision"]
+        else:
+            frame = info["raw_vision"]
+
+        frame = frame.astype(np.uint8)
+        frame = np.concatenate((frame[0, :, :, :], frame[1, :, :, :]), axis=1)
+        self.writer.append_data(frame)
+
+        return info
+    
