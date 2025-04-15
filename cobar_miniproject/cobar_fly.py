@@ -182,6 +182,12 @@ class CobarFly(Fly):
             "Rostrum",
             "Thorax",
         ]
+    
+    def reset(self, sim, **kwargs):
+        obs, info = super().reset(sim, **kwargs)
+        obs["vision_updated"] = True
+        obs["reached_odour"] = False
+        return obs, info
 
     def get_observation(self, sim: Simulation):
         # if we're running the fly in debug mode (for development) it will return all raw observations
