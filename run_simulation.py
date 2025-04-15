@@ -74,6 +74,11 @@ def run_simulation(
             # finish the path integration level
             break
 
+        if not obs["vision_updated"]:
+            if "vision" in obs:
+                del obs["vision"]
+            if "raw_vision" in obs:
+                del obs["raw_vision"]
         obs_hist.append(obs)
         info_hist.append(info)
 

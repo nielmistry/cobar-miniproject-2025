@@ -80,8 +80,14 @@ if __name__ == "__main__":
                 # finish the path integration level
                 break
 
+            if not obs["vision_updated"]:
+                if "vision" in obs:
+                    del obs["vision"]
+                if "raw_vision" in obs:
+                    del obs["raw_vision"]
             obs_hist.append(obs)
             info_hist.append(info)
+            print(info_hist)
 
             rendered_img = sim.render()[0]
             if rendered_img is not None:
