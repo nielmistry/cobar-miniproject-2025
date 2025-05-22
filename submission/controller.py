@@ -81,7 +81,7 @@ class Controller(BaseController):
         ODOR_GAIN = -600
         DELTA_MIN = 0.2
         DELTA_MAX = 0.8
-        BASE_IMPORTANCE = 0.6
+        BASE_IMPORTANCE = 0.4
         MAX_IMPORTANCE = 0.9
 
         if self.odor_turn_timer > 0:
@@ -159,8 +159,8 @@ class Controller(BaseController):
     ) -> CommandWithImportance:
         MAX_DELTA = 0.8
         MIN_DELTA = 0.2
-        IMPORTANCE = 0.7
-        GAIN = 20000
+        IMPORTANCE = 0.9
+        GAIN = 40000
 
         vision = obs["vision"]
         brightness = np.mean(vision, axis=2)
